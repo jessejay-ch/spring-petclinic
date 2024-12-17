@@ -25,17 +25,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.aot.DisabledInAotMode;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 /**
  * Test class for {@link VisitController}
  *
  * @author Colin But
+ * @author Wick Dynex
  */
 @WebMvcTest(VisitController.class)
+@DisabledInNativeImage
+@DisabledInAotMode
 class VisitControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
@@ -45,7 +52,7 @@ class VisitControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@MockitoBean
 	private OwnerRepository owners;
 
 	@BeforeEach
@@ -54,7 +61,7 @@ class VisitControllerTests {
 		Pet pet = new Pet();
 		owner.addPet(pet);
 		pet.setId(TEST_PET_ID);
-		given(this.owners.findById(TEST_OWNER_ID)).willReturn(owner);
+		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(owner));
 	}
 
 	@Test
